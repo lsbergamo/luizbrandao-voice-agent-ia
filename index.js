@@ -62,8 +62,7 @@ Caso o numero de telefone não seja o mesmo que o cliente usou para ligar, pergu
 // Função para obter os dados da API e atualizar a SYSTEM_MESSAGE
 async function obterDados() {
     try {
-        const url =
-            "https://voip.luizbrandao.me/api/clinica.php?agenda=eu@luizbrandao.me&especialidade=Psiquiatra&medico=Luiz";
+        const url = "https://srv658237.hstgr.cloud/clinicas.php";
 
         // Criar um agente HTTPS que ignora certificados inválidos
         const httpsAgent = new https.Agent({
