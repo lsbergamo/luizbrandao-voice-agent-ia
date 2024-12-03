@@ -92,6 +92,7 @@ async function obterDados() {
 
 // Chamar a função para executar o processo
 obterDados().then(() => {
+     setInterval(obterDados, 900000);
     // Coloque aqui qualquer código que dependa de SYSTEM_MESSAGE atualizado
     // Por exemplo, iniciar o servidor ou outras operações
     // Certifique-se de que todo o código que depende de SYSTEM_MESSAGE esteja dentro deste bloco
@@ -134,10 +135,9 @@ obterDados().then(() => {
         reply.type("text/xml").send(twimlResponse);
     });
 
-    // WebSocket route for media-stream
+// WebSocket route for media-stream
     fastify.register(async (fastify) => {
-        fastify.get("/media-stream", { websocket: true }, async (connection, req) => {
-            await obterDados(); // Atualiza SYSTEM_MESSAGE para esta conexão
+        fastify.get("/media-stream", { websocket: true }, (connection, req) => {
             console.log("Client connected");
 
             // Connection-specific state
