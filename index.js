@@ -115,7 +115,7 @@ obterDados().then(() => {
     const SHOW_TIMING_MATH = false;
 
     // Root Route
-    fastify.get("/", async (request, reply) => {
+    fy.get("/", async (request, reply) => {
         reply.send({ message: "Twilio Media Stream Server is running!" });
     });
 
@@ -136,7 +136,8 @@ obterDados().then(() => {
 
     // WebSocket route for media-stream
     fastify.register(async (fastify) => {
-        fastify.get("/media-stream", { websocket: true }, (connection, req) => {
+        fastify.get("/media-stream", { websocket: true }, async (connection, req) => {
+            await obterDados(); // Atualiza SYSTEM_MESSAGE para esta conexão
             console.log("Client connected");
 
             // Connection-specific state
