@@ -116,7 +116,7 @@ obterDados().then(() => {
     const SHOW_TIMING_MATH = false;
 
     // Root Route
-    fy.get("/", async (request, reply) => {
+    fastify.get("/", async (request, reply) => {
         reply.send({ message: "Twilio Media Stream Server is running!" });
     });
 
