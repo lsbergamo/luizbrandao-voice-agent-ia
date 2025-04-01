@@ -14,7 +14,15 @@ if (!OPENAI_API_KEY) {
     process.exit(1);
 }
 
-const fastify = Fastify();
+//const fastify = Fastify();
+
+const fastify = Fastify({
+    https: {
+        key: fs.readFileSync('/etc/asterisk/keys/privkey.pem'),
+        cert: fs.readFileSync('/etc/asterisk/keys/fullchain.pem'),
+    }
+});
+
 fastify.register(fastifyFormBody);
 fastify.register(fastifyWs);
 
@@ -117,7 +125,7 @@ fastify.all("/incoming-call", async (request, reply) => {
     <Response>
         <Say language="pt-BR">Olá.</Say>
         <Connect>
-            <Stream url="ws://${request.headers.host}/media-stream"/>
+            <Stream url="wss://${request.headers.host}/media-stream"/>
         </Connect>
     </Response>`;
 
