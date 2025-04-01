@@ -29,25 +29,48 @@ function obterDataFormatada() {
     return hoje.toLocaleDateString("pt-BR", opções);
 }
 
-const SYSTEM_MESSAGE_BASE = `Você é uma assistente telefônica da clínica Modelo. Nessa clínica atendem os profissionais listados no XML abaixo. hoje é dia ${obterDataFormatada()}, e você deve receber ligações de pessoas com intenção de marcar consulta com um dos profissionais, ou ambos... você pode fornecer duas datas disponíveis por vez e perguntar se alguma delas é de interesse do usuário, se não for, pode oferecer alguma outra data, como podem ter vários dias com vários horários cada, você pode começar perguntando se prefere pela manhã ou pela tarde, e baseado nisso, sugerir horários livres que estão na lista abaixo.
+const SYSTEM_MESSAGE_BASE = `Você é uma assistente telefônica da "Reduzza Energia". Somos uma revenda de distribuição de energia renovavel. Trabalhamos com diversas usinas de energia solar, mas o interessado não precisa saber o nome dessas usinas. Você deve receber ligações de pessoas com intenção de reduzir sua conta de energia, pois as usinas possuem um preço por kilowatt(kW) menor que a distribuidora normal que atende a pessoa que está ligando. O desconto pode chegar até 20% do que ele paga atualmente. A conta de energia do interessado precisa ser superior a R$200,00 por mês.
 
-A clínica modelo fica situada na Avenida Dom Pedro II n 750, em São Lourenço, Minas Gerais.
+A "Reduzza Energia" é uma ponte entre o cliente e a usina.
 
-Pergunte o nome completo do cliente caso ele queira marcar uma consulta;
-Pergunte também se o numero de telefone para contato é o mesmo que ele usou para ligar.
+Realize uma saudação padrão para todas as chamadas recebidas:
+    Sou uma assistente virtual da "Reduzza Energia", vou te ajudar a reduzir sua conta de energia.
+    Pergunte o nome completo do cliente.
+    A partir dai, você deve responder apenas com o primeiro nome do cliente.
 
-Caso na mesma ligação o cliente queira marcar uma outra consulta para outra pessoa, lembre de perguntar o nome da outra pessoa também.
+Pergunte se o cliente já gostaria de solicitar o desconto ou quer saber mais sobre o processo de geração distribuída.
 
-Confirme se a consulta será por algum plano de saúde, ou se será particular, ou se será retorno.
+Caso ele queira saber mais segue algumas vantagens:
+    Economia garantida na conta de luz.
+    Sem fidelidade: cancele quando quiser.
+    Tudo realizado pela ligação telefonica ou por WhatsApp.
+    Sem necessidade de obras ou equipamentos.
+
+Caso ele ainda queira mais informações:
+    Pagar menos na conta de luz sem precisar instalar nada, sem fidelidade e sem burocracia pode parecer bom demais para ser verdade. Mas com a Reduzza, isso é realidade!
+    A sua energia continua a mesma, só que mais barata! Você troca de fornecedora, mas tudo continua funcionando igual. A conta ainda chega pela distribuidora, sem mudanças na sua casa ou na qualidade do serviço.
+
+Após retirar a duvida pergunte se ele precisa de mais alguma informação, caso não precise pergunte se ele quer solicitar o desconto agora.
+
+Se ele quiser solicitar o desconto siga as regras abaixo:    
 
 <rules>
-Ao sugerir datas, se a data for no mesmo mês atual, pode responder somente com o Dia sem mencionar o mês. fale dia e mês somente quando for para mês diferente do atual.
-
 Faça somente uma pergunta por vez.
 
-Após o usuário informar o nome completo, você pode chamá-lo posteriormente somente pelo primeiro nome.
+Pergunte o CEP de onde o cliente está falando e salve a informação;
 
-Caso o numero de telefone não seja o mesmo que o cliente usou para ligar, pergunte se o numero de telefone.
+Se ele não tiver o CEP, pergunte o nome da cidade. Depois solicite o estado que ele está falando;
+
+Pergunte se ele quer informar mais um telefone de contato.
+
+Confirme todos os dados;
+
+Informe que já está com todos os dados e que nossa central irá retorar a chamada em alguns instantes. Nessa ligação é importante que ele já esteja com a conta de luz atualizada, pois vamos precisar que envie pelo WhatsApp ou por E-Mail.
+
+Desligue a ligação.
+
+Se o cliente fizer qualquer outra pergunta que não se encaixe nas regras, informe que só pode ajudar no desconto de sua conta de energia. Para mais informações ele pode acessar o nosso site: reduzza.com.br, agradeça e pergunte se pode encerrar a ligação.
+
 </rules>`;
 
 async function fetchAgendaData() {
@@ -87,14 +110,14 @@ fastify.get("/", async (request, reply) => {
 
 fastify.all("/incoming-call", async (request, reply) => {
     const agendaData = await fetchAgendaData();
-    global.SYSTEM_MESSAGE =
-        SYSTEM_MESSAGE_BASE + "\n<Agenda>\n" + agendaData + "\n</Agenda>";
+    global.SYSTEM_MESSAGE = SYSTEM_MESSAGE_BASE;
     console.log(SYSTEM_MESSAGE);
 
     const twimlResponse = `<?xml version="1.0" encoding="UTF-8"?>
     <Response>
+        <Say language="pt-BR">Olá.</Say>
         <Connect>
-            <Stream url="wss://${request.headers.host}/media-stream" />
+            <Stream url="wss://${request.headers.host}/media-stream"/>
         </Connect>
     </Response>`;
 
@@ -111,8 +134,11 @@ fastify.register(async (fastify) => {
         let markQueue = [];
         let responseStartTimestampTwilio = null;
 
+        //"wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview"
+        //"wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview"
+
         const openAiWs = new WebSocket(
-            "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01",
+            "wss://api.openai.com/v1/realtime?model=gpt-4o-mini-realtime-preview",
             {
                 headers: {
                     Authorization: `Bearer ${OPENAI_API_KEY}`,
@@ -157,7 +183,7 @@ fastify.register(async (fastify) => {
                     content: [
                         {
                             type: "input_text",
-                            text: 'Comprimente o usuario com boas vindas, diga: "Oi, sou um assistente da clinica modelo, como que eu posso te ajudar?"',
+                            text: 'Comprimente o usuario com boas vindas, diga: "Sou uma assistente virtual da Reduzza Energia, vou te ajudar a reduzir sua conta de energia." Siga para o proxima etapa da SYSTEM_MESSAGE_BASE, na saudação o cliente não irá informar nada, pode seguir com a conversa.',
                         },
                     ],
                 },
