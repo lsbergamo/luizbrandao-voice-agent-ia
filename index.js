@@ -19,8 +19,8 @@ if (!OPENAI_API_KEY) {
 
 const fastify = Fastify({
     https: {
-        key: fs.readFileSync('/etc/asterisk/keys/privkey.pem'),
-        cert: fs.readFileSync('/etc/asterisk/keys/fullchain.pem'),
+        key: fs.readFileSync('./ssl/privkey.pem'),
+        cert: fs.readFileSync('./ssl/fullchain.pem'),
     }
 });
 
