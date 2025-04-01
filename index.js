@@ -171,7 +171,7 @@ fastify.register(async (fastify) => {
                     voice: VOICE,
                     instructions: global.SYSTEM_MESSAGE,
                     modalities: ["text", "audio"],
-                    temperature: 0.8,
+                    temperature: 0.7,
                 },
             };
 
@@ -192,7 +192,7 @@ fastify.register(async (fastify) => {
                     content: [
                         {
                             type: "input_text",
-                            text: 'Comprimente o usuario com boas vindas, diga: "Sou uma assistente virtual da Reduzza Energia, vou te ajudar a reduzir sua conta de energia." Siga para o proxima etapa da SYSTEM_MESSAGE_BASE, na saudação o cliente não irá informar nada, pode seguir com a conversa.',
+                            text: 'Comprimente o usuario com boas vindas, diga: "Sou uma assistente virtual da "Reduzza Energia", vou te ajudar a reduzir sua conta de energia." Siga para o proxima etapa da SYSTEM_MESSAGE_BASE, na saudação o cliente não irá informar nada, pode seguir com a conversa.',
                         },
                     ],
                 },
