@@ -117,7 +117,7 @@ fastify.all("/incoming-call", async (request, reply) => {
     <Response>
         <Say language="pt-BR">Olá.</Say>
         <Connect>
-            <Stream url="wss://${request.headers.host}/media-stream"/>
+            <Stream url="ws://${request.headers.host}/media-stream"/>
         </Connect>
     </Response>`;
 
