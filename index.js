@@ -5,6 +5,7 @@ import fastifyFormBody from "@fastify/formbody";
 import fastifyWs from "@fastify/websocket";
 import fetch from "node-fetch";
 import https from "https";
+import fs from "fs";
 
 dotenv.config();
 const { OPENAI_API_KEY } = process.env;
