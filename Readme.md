@@ -84,3 +84,13 @@ To have the AI voice assistant talk before the user, uncomment the line `// send
 When the user speaks and OpenAI sends `input_audio_buffer.speech_started`, the code will clear the Twilio Media Streams buffer and send OpenAI `conversation.item.truncate`.
 
 Depending on your application's needs, you may want to use the [`input_audio_buffer.speech_stopped`](https://platform.openai.com/docs/api-reference/realtime-server-events/input_audio_buffer/speech_stopped) event, instead.
+
+
+Como rodar o projeto (primeira vez) como serviço linux - Copie o arquivo "voice-agent-ia.service" para "/etc/systemd/system/" - Após copiar, execute os 3 comandos a seguir afim de reiniciar o sistema de serviços do linux e reconhecer o novo serviço:
+sudo systemctl daemon-reload
+sudo systemctl start voice-agent-ia.service
+sudo systemctl enable voice-agent-ia.service
+
+- Para Reiniciar o serviço:
+sudo systemctl stop voice-agent-ia.service
+sudo systemctl start voice-agent-ia.service

@@ -1,0 +1,14 @@
+[Unit]
+Description=Websocket Voice Agent
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /home/ubuntu/voice-agent-ia/index.js
+WorkingDirectory=/home/ubuntu/voice-agent-ia/
+EnvironmentFile=/home/ubuntu/voice-agent-ia/.env
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
