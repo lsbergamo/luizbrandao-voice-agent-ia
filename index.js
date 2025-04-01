@@ -316,6 +316,7 @@ fastify.register(async (fastify) => {
 
                 switch (data.event) {
                     case "media":
+                        console.log("📥 Audio recebido do Twilio, tamanho:", data.media.payload.length);
                         latestMediaTimestamp = data.media.timestamp;
                         if (SHOW_TIMING_MATH) {
                             console.log(
